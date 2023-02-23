@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.powernode.mybatis.mapper.CarMapper">
+  <resultMap id="BaseResultMap" type="com.powernode.mybatis.pojo.Car">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="car_num" jdbcType="VARCHAR" property="carNum" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="guide_price" jdbcType="DECIMAL" property="guidePrice" />
+    <result column="produce_time" jdbcType="CHAR" property="produceTime" />
+    <result column="car_type" jdbcType="VARCHAR" property="carType" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_car
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.powernode.mybatis.pojo.Car">
+    insert into t_car (id, car_num, brand, 
+      guide_price, produce_time, car_type
+      )
+    values (#{id,jdbcType=BIGINT}, #{carNum,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, 
+      #{guidePrice,jdbcType=DECIMAL}, #{produceTime,jdbcType=CHAR}, #{carType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.powernode.mybatis.pojo.Car">
+    update t_car
+    set car_num = #{carNum,jdbcType=VARCHAR},
+      brand = #{brand,jdbcType=VARCHAR},
+      guide_price = #{guidePrice,jdbcType=DECIMAL},
+      produce_time = #{produceTime,jdbcType=CHAR},
+      car_type = #{carType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, car_num, brand, guide_price, produce_time, car_type
+    from t_car
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, car_num, brand, guide_price, produce_time, car_type
+    from t_car
+  </select>
+</mapper>

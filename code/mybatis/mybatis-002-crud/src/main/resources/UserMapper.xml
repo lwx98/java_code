@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="aaaaaaaaa">
+
+    <select id="selectAll" resultType="com.powernode.mybatis.pojo.Car">
+        select
+            id,car_num as carNum,brand,guide_price as guidePrice,
+            produce_time as produceTime,
+            car_type
+        from
+            t_car
+    </select>
+
+
+</mapper>

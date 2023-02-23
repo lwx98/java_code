@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--sqlMapper.xml文件的编写者，提供者是谁？使用你mybatis框架的java程序员负责提供的。-->
+<!--要想使用这种机制：namespace必须是dao接口的全限定名称。-->
+<mapper namespace="com.powernode.bank.dao.AccountDao">
+
+    <!--要想使用这种机制：id必须是dao接口的方法名。-->
+    <select id="selectByActno" resultType="com.powernode.bank.pojo.Account">
+        select * from t_act where actno = #{actno}
+    </select>
+
+    <update id="updateByActno">
+        update t_act set balance = #{balance} where actno = #{actno}
+    </update>
+
+</mapper>

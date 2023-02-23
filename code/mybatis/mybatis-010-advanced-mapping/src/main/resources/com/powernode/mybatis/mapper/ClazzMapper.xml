@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.powernode.mybatis.mapper.ClazzMapper">
+
+    <!--分步查询第一步：根据班级的cid获取班级信息。-->
+    <resultMap id="clazzResultMapStep" type="Clazz">
+        <id property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+        <collection property="stus"
+                    select="com.powernode.mybatis.mapper.StudentMapper.selectByCidStep2"
+                    column="cid" fetchType="eager" />
+    </resultMap>
+
+    <select id="selectByStep1" resultMap="clazzResultMapStep">
+        select cid,cname from t_clazz where cid = #{cid}
+    </select>
+
+    <resultMap id="clazzResultMap" type="Clazz">
+        <id property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+        <!--一对多，这里是collection。collection是集合的意思。-->
+        <!--ofType 属性用来指定集合当中的元素类型。-->
+        <collection property="stus" ofType="Student">
+            <id property="sid" column="sid"/>
+            <result property="sname" column="sname"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectByCollection" resultMap="clazzResultMap">
+        select c.cid,c.cname,s.sid,s.sname from t_clazz c left join t_stu s on c.cid = s.cid where c.cid = #{cid}
+    </select>
+
+
+    <!--分步查询第二步：根据cid获取班级信息。-->
+    <select id="selectByIdStep2" resultType="Clazz">
+        select cid,cname from t_clazz where cid = #{cid}
+    </select>
+
+</mapper>

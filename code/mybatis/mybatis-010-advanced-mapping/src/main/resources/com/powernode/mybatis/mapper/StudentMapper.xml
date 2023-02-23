@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.powernode.mybatis.mapper.StudentMapper">
+
+    <select id="selectByCidStep2" resultType="Student">
+        select * from t_stu where cid = #{cid}
+    </select>
+
+    <!--
+        分步查询的优点：
+            第一：复用性增强。可以重复利用。（大步拆成N多个小碎步。每一个小碎步更加可以重复利用。）
+            第二：采用这种分步查询，可以充分利用他们的延迟加载/懒加载机制。
+        什么是延迟加载（懒加载），有什么用？
+            延迟加载的核心原理是：用的时候再执行查询语句。不用的时候不查询。
+            作用：提高性能。尽可能的不查，或者说尽可能的少查。来提高效率。
+        在mybatis当中怎么开启延迟加载呢？
+            association标签中添加fetchType="lazy"
+            注意：默认情况下是没有开启延迟加载的。需要设置：fetchType="lazy"
+            这种在association标签中配置fetchType="lazy"，是局部的设置，只对当前的association关联的sql语句起作用。
+
+        在实际的开发中，大部分都是需要使用延迟加载的，所以建议开启全部的延迟加载机制：
+            在mybatis核心配置文件中添加全局配置：lazyLoadingEnabled=true
+
+        实际开发中的模式：
+            把全局的延迟加载打开。
+            如果某一步不需要使用延迟加载，请设置：fetchType="eager"
+    -->
+    <!--两条SQL语句，完成多对一的分步查询。-->
+    <!--这里是第一步：根据学生的id查询学生的所有信息。这些信息当中含有班级id（cid）-->
+    <resultMap id="studentResultMapByStep" type="Student">
+        <id property="sid" column="sid"/>
+        <result property="sname" column="sname"/>
+        <association property="clazz"
+                     select="com.powernode.mybatis.mapper.ClazzMapper.selectByIdStep2"
+                     column="cid"
+                     fetchType="eager"/>
+    </resultMap>
+
+    <select id="selectByIdStep1" resultMap="studentResultMapByStep">
+        select sid,sname,cid from t_stu where sid = #{sid}
+    </select>
+
+    <!--一条SQL语句，association。-->
+    <resultMap id="studentResultMapAssociation" type="Student">
+        <id property="sid" column="sid"/>
+        <result property="sname" column="sname"/>
+        <!--
+            association：翻译为关联。一个Student对象关联一个Clazz对象
+                property：提供要映射的POJO类的属性名。
+                javaType：用来指定要映射的java类型。
+        -->
+        <association property="clazz" javaType="Clazz">
+            <id property="cid" column="cid"/>
+            <result property="cname" column="cname"/>
+        </association>
+    </resultMap>
+
+    <select id="selectByIdAssociation" resultMap="studentResultMapAssociation">
+        select
+            s.sid,s.sname,c.cid,c.cname
+        from
+            t_stu s left join t_clazz c on s.cid = c.cid
+        where
+            s.sid = #{sid}
+    </select>
+
+    <!--多对一映射的第一种方式：一条SQL语句，级联属性映射。-->
+    <resultMap id="studentResultMap" type="Student">
+        <id property="sid" column="sid"/>
+        <result property="sname" column="sname"/>
+        <result property="clazz.cid" column="cid"/>
+        <result property="clazz.cname" column="cname"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="studentResultMap">
+        select
+            s.sid,s.sname,c.cid,c.cname
+        from
+            t_stu s left join t_clazz c on s.cid = c.cid
+        where
+            s.sid = #{sid}
+    </select>
+
+</mapper>

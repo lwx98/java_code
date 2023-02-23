@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <!--java.util.Properties类。是一个Map集合。key和value都是String类型-->
+    <!--在properties标签中可以配置很多属性-->
+    <!--<properties>-->
+        <!--这是其中的一个属性-->
+        <!--<property name="属性名" value="属性值"/>-->
+        <!--<property name="jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbc.url" value="jdbc:mysql://localhost:3306/powernode"/>
+        <property name="jdbc.username" value="root"/>
+        <property name="jdbc.password" value="root"/>-->
+    <!--</properties>-->
+
+    <!--resource,一定是从类路径下开始查找资源-->
+    <properties resource="jdbc.properties" />
+
+    <!--从绝对路径当中加载资源。绝对路径怎么写？file:///路径-->
+    <!--<properties url="file:///d:/jdbc.properties" />-->
+
+
+
+    <!--default表示默认使用的环境。-->
+    <!--默认环境什么意思？当你使用mybatis创建SqlSessionFactory对象的时候，没有指定环境的话，默认使用哪个环境。-->
+    <environments default="powernodeDB">
+
+        <!--其中的一个环境。连接的数据库是powernode-->
+        <!--一般一个数据库会对应一个SqlSessionFactory对象。-->
+        <!--一个环境environment会对应一个SqlSessionFactory对象-->
+        <environment id="powernodeDB">
+            <!--
+                transactionManager标签：
+                    1.作用：配置事务管理器。指定mybatis具体使用什么方式去管理事务。
+                    2.type属性有两个值：
+                        第一个：JDBC: 使用原生的JDBC代码来管理事务。
+                            conn.setAutoCommit(false);
+                            ....
+                            conn.commit();
+                        第二个：MANAGED：mybatis不再负责事务的管理，将事务管理交给其它的JEE(JavaEE)容器来管理。例如：spring
+                    3. 大小写无所谓。不缺分大小写。但是不能写其他值。只能是二选一：
+                        jdbc、managed
+                    4. 在mybatis中提供了一个事务管理器接口：Transaction
+                        该接口下有两个实现类：
+                            JdbcTransaction
+                            ManagedTransaction
+                        如果type="JDBC"，那么底层会实例化JdbcTransaction对象。
+                        如果type="MANAGED"，那么底层会实例化ManagedTransaction
+            -->
+            <transactionManager type="JDBC"/>
+            <!--
+                dataSource配置：
+                    1.dataSource被称为数据源。
+                    2.dataSource作用是什么？为程序提供Connection对象。（但凡是给程序提供Connection对象的，都叫做数据源。）
+                    3.数据源实际上是一套规范。JDK中有这套规范：javax.sql.DataSource（这个数据源的规范，这套接口实际上是JDK规定的。）
+                    4.我们自己也可以编写数据源组件，只要实现javax.sql.DataSource接口就行了。实现接口当中所有的方法。这样就有了自己的数据源。
+                    比如你可以写一个属于自己的数据库连接池（数据库连接池是提供连接对象的，所以数据库连接池就是一个数据源）。
+                    5.常见的数据源组件有哪些呢【常见的数据库连接池有哪些呢】？
+                        阿里巴巴的德鲁伊连接池：druid
+                        c3p0
+                        dbcp
+                        ....
+                    6. type属性用来指定数据源的类型，就是指定具体使用什么方式来获取Connection对象：
+                        type属性有三个值：必须是三选一。
+                        type="[UNPOOLED|POOLED|JNDI]"
+                        UNPOOLED：不使用数据库连接池技术。每一次请求过来之后，都是创建新的Connection对象。
+                        POOLED：使用mybatis自己实现的数据库连接池。
+                        JNDI：集成其它第三方的数据库连接池。
+
+                        JNDI是一套规范。谁实现了这套规范呢？大部分的web容器都实现了JNDI规范：
+                            例如：Tomcat、Jetty、WebLogic、WebSphere，这些服务器(容器)都实现了JNDI规范。
+                        JNDI是：java命名目录接口。Tomcat服务器实现了这个规范。
+            -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+                <!--提醒：正常使用连接池的话，池中有很多参数是需要设置的。设置好参数，可以让连接池发挥的更好。事半功倍的效果。-->
+                <!--具体连接池当中的参数如何配置呢？需要反复的根据当前业务情况进行测试。-->
+                <!--poolMaximumActiveConnections：连接池当中最多的正在使用的连接对象的数量上限。最多有多少个连接可以活动。默认值10-->
+                <property name="poolMaximumActiveConnections" value="10"/>
+                <!--每隔2秒打印日志，并且尝试获取连接对象-->
+                <property name="poolTimeToWait" value="2000"/>
+                <!--强行让某个连接空闲，超时时间的设置-->
+                <property name="poolMaximumCheckoutTime" value="10000"/>
+                <!--最多的空闲数量-->
+                <property name="poolMaximumIdleConnections" value="5"/>
+            </dataSource>
+
+        </environment>
+
+        <!--这是mybatis的另一个环境，也就是连接的数据库是另一个数据库mybatis-->
+        <environment id="mybatisDB">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatis"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </dataSource>
+        </environment>
+
+    </environments>
+
+    <mappers>
+        <mapper resource="CarMapper.xml"/>
+    </mappers>
+</configuration>

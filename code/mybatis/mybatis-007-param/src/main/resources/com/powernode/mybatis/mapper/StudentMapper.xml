@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.powernode.mybatis.mapper.StudentMapper">
+
+    <select id="selectByNameAndSex2" resultType="Student">
+        <!--使用了@Param注解之后，arg0和arg1失效了-->
+        <!--select * from t_student where name = #{arg0} and sex = #{arg1}-->
+
+        <!--使用了@Param注解之后，param1和param2还可以用-->
+        <!--select * from t_student where name = #{param1} and sex = #{param2}-->
+
+        select * from t_student where name = #{name} and sex = #{sex}
+
+    </select>
+
+    <!--
+        注意：低版本的mybatis中，使用的是：#{0}和#{1}，以及#{2}...
+        高版本的mybatis中，使用的是：
+            #{arg0}
+            #{arg1}
+            #{arg2}
+            #{arg3}
+            #{arg4}
+
+            #{param1}
+            #{param2}
+            #{param3}
+            #{param4}
+    -->
+    <select id="selectByNameAndSex" resultType="Student">
+        <!--select * from t_student where name = #{arg0} and sex = #{arg1}-->
+        <!--select * from t_student where name = #{param1} and sex = #{param2}-->
+        select * from t_student where name = #{arg0} and sex = #{param2}
+    </select>
+
+    <!--<insert id="insertStudentByPOJO" parameterType="student">-->
+    <insert id="insertStudentByPOJO">
+        insert into t_student(id,name,age,sex,birth,height) values(null,#{name},#{age},#{sex},#{birth},#{height})
+    </insert>
+
+    <!--<insert id="insertStudentByMap" parameterType="map">-->
+    <insert id="insertStudentByMap">
+        insert into t_student(id,name,age,sex,birth,height) values(null,#{姓名},#{年龄},#{性别},#{生日},#{身高})
+    </insert>
+
+    <!--
+    List<Student> selectById(Long id);
+    List<Student> selectByName(String name);
+    List<Student> selectByBirth(Date birth);
+    List<Student> selectBySex(Character sex);
+
+    parameterType属性的作用：
+        告诉mybatis框架，我这个方法的参数类型是什么类型。
+        mybatis框架自身带有类型自动推断机制，所以大部分情况下parameterType属性都是可以省略不写的。
+
+        SQL语句最终是这样的：
+            select * from t_student where id = ?
+        JDBC代码是一定要给?传值的。
+        怎么传值？ps.setXxx(第几个问号, 传什么值);
+            ps.setLong(1, 1L);
+            ps.setString(1, "zhangsan");
+            ps.setDate(1, new Date());
+            ps.setInt(1, 100);
+            ...
+        mybatis底层到底调用setXxx的哪个方法，取决于parameterType属性的值。
+
+    注意：mybatis框架实际上内置了很多别名。可以参考开发手册。
+    -->
+    <select id="selectById" resultType="Student" parameterType="long">
+        select * from t_student where id = #{id}
+    </select>
+
+    <select id="selectByName" resultType="student">
+        select * from t_student where name = #{name, javaType=String, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByBirth" resultType="student">
+        select * from t_student where birth = #{birth}
+    </select>
+
+    <select id="selectBySex" resultType="student">
+        select * from t_student where sex = #{sex}
+    </select>
+
+</mapper>

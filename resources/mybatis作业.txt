@@ -1,0 +1,40 @@
+1. 独立完成mybatis入门程序的开发。
+2. 使用mybatis完成CRUD操作。
+3. 手写mybatis框架，至少实现insert和selectOne方法。
+4. 使用MVC架构模式完成用户信息的CRUD，并且要求持久层使用mybatis完成。
+5. 使用javassist动态生成mapper接口的代理类。
+6. 使用mybatis完成用户登录，使用${}完成SQL注入，使用#{}改良来防止SQL注入。
+7. 编写程序测试mybatis的各种参数处理：
+	* 单个简单类型参数
+	* Map参数
+	* 实体类参数
+	* 多参数
+	* 使用@Param注解传参
+8. 编写程序完成mybatis的各种查询：
+	* 返回单个对象
+	* 返回多个对象
+	* 返回单个Map
+	* 返回多个Map
+	* 返回大Map，以数据的主键作为大Map的key
+	* 使用resultMap进行结果映射
+	* 查询并返回总记录条数
+9. 编写程序测试动态SQL：
+	* 多条件查询来测试if、where、trim标签
+	* 更新操作测试set标签
+	* 多条件查询来测试choose when otherwise标签
+10. 编写程序测试mybatis高级映射：
+	* 一对多映射，以及延迟加载
+	* 多对一映射，以及延迟加载
+11. 编写程序测试mybatis的缓存：
+	* 一级缓存的测试
+	* 二级缓存的测试
+	* 其他缓存组件的集成，例如Ehcache
+12. 提供数据库表，使用mybatis逆向工程生成java类、Mapper接口以及配置文件。
+	* 使用增删改查测试逆向工程。
+	* 使用QBC风格测试增删改查。
+13. 使用mybatis的PageHelper插件完成数据的分页查询。建议使用WEB应用。
+14. 编写程序，能够使用mybatis注解完成简单的增删改查：
+	@Insert
+	@Delete
+	@Update
+	@Select
